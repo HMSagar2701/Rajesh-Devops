@@ -1,14 +1,14 @@
 "use client"; // Mark this component as a client component
 
 import React from "react";
-import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
+import { useRouter } from "next/navigation";
 import courseData from "./data";
 
 export default function Courses() {
-    const router = useRouter(); // Initialize useRouter
+    const router = useRouter();
 
-    const handleViewCourse = (id: number) => {
-        router.push(`/courses/${id}`); // Navigate to course detail page
+    const handleViewCourse = (id) => {
+        router.push(`/courses/${id}`);
     };
 
     return (
@@ -26,9 +26,9 @@ export default function Courses() {
                         <div className="p-6">
                             <h2 className="text-xl font-semibold mb-2 text-blue-500">{course.title}</h2>
                             <p className="text-gray-600 mb-4">{course.description}</p>
-                            <div className="flex justify-center"> {/* Centered the button */}
+                            <div className="flex justify-center">
                                 <button 
-                                    onClick={() => handleViewCourse(course.id)} // Use handleViewCourse to navigate
+                                    onClick={() => handleViewCourse(course.id)}
                                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105"
                                 >
                                     View Course
