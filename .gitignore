@@ -38,3 +38,24 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Node modules
+node_modules/
+
+# Log files
+logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Build output
+dist
+build
+
+# MacOS system files
+.DS_Store
+
+# IDE specific files
+.idea/
+.vscode/
