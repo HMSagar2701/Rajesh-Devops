@@ -1,8 +1,16 @@
-// app/courses/Courses.js
+"use client"; // Mark this component as a client component
+
 import React from "react";
+import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
 import courseData from "./data";
 
 export default function Courses() {
+    const router = useRouter(); // Initialize useRouter
+
+    const handleViewCourse = (id: number) => {
+        router.push(`/courses/${id}`); // Navigate to course detail page
+    };
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-800 pt-24">
             <h1 className="text-4xl font-bold mb-8 text-blue-600">Our Courses</h1>
@@ -18,12 +26,12 @@ export default function Courses() {
                         <div className="p-6">
                             <h2 className="text-xl font-semibold mb-2 text-blue-500">{course.title}</h2>
                             <p className="text-gray-600 mb-4">{course.description}</p>
-                            <div className="flex justify-between">
-                                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
+                            <div className="flex justify-center"> {/* Centered the button */}
+                                <button 
+                                    onClick={() => handleViewCourse(course.id)} // Use handleViewCourse to navigate
+                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105"
+                                >
                                     View Course
-                                </button>
-                                <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 transform hover:scale-105">
-                                    Enroll Course
                                 </button>
                             </div>
                         </div>
