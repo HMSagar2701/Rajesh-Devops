@@ -22,17 +22,26 @@ export default function CourseDetail() {
     return <div>Course not found</div>;
   }
 
-  // Custom Video Player Component with Like/Dislike and Description
-  const VideoPlayer = ({ videoUrl, title, description }) => {
+  const VideoPlayer = ({ videoUrl, title, description, videoId }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
     const [volume, setVolume] = useState(100);
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
-    const [hasLiked, setHasLiked] = useState(false); // Track like status
-    const [hasDisliked, setHasDisliked] = useState(false); // Track dislike status
+    const [hasLiked, setHasLiked] = useState(false);
+    const [hasDisliked, setHasDisliked] = useState(false);
+    const [played, setPlayed] = useState(0);
+    const [duration, setDuration] = useState(0);
     const playerRef = useRef(null);
     const [isFullScreen, setIsFullScreen] = useState(false);
+
+    useEffect(() => {
+      const savedLikeStatus = JSON.parse(localStorage.getItem(`likeStatus-${videoId}`)) || {};
+      setHasLiked(savedLikeStatus.liked || false);
+      setHasDisliked(savedLikeStatus.disliked || false);
+      setLikes(savedLikeStatus.likes || 0);
+      setDislikes(savedLikeStatus.dislikes || 0);
+    }, [videoId]);
 
     const toggleFullScreen = () => {
       if (!isFullScreen) {
@@ -54,6 +63,7 @@ export default function CourseDetail() {
           setDislikes(dislikes - 1);
           setHasDisliked(false);
         }
+        saveLikeStatus(true, false);
       }
     };
 
@@ -65,14 +75,46 @@ export default function CourseDetail() {
           setLikes(likes - 1);
           setHasLiked(false);
         }
+        saveLikeStatus(false, true);
       }
+    };
+
+    const saveLikeStatus = (liked, disliked) => {
+      localStorage.setItem(
+        `likeStatus-${videoId}`,
+        JSON.stringify({ liked, disliked, likes, dislikes })
+      );
+    };
+
+    const handleProgress = (state) => {
+      setPlayed(state.played);
+    };
+
+    const handleSeek = (e) => {
+      const seekTo = parseFloat(e.target.value);
+      playerRef.current.seekTo(seekTo);
+      setPlayed(seekTo);
+    };
+
+    const handleSkip = (seconds) => {
+      const currentTime = playerRef.current.getCurrentTime();
+      playerRef.current.seekTo(currentTime + seconds);
+    };
+
+    const formatTime = (seconds) => {
+      const hrs = Math.floor(seconds / 3600);
+      const mins = Math.floor((seconds % 3600) / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${hrs > 0 ? `${hrs}:` : ""}${mins < 10 && hrs > 0 ? "0" : ""}${mins}:${
+        secs < 10 ? "0" : ""
+      }${secs}`;
     };
 
     return (
       <div className="relative rounded-lg overflow-hidden mb-6">
-        {/* Video Wrapper */}
         <div className="player-wrapper" ref={playerRef}>
           <ReactPlayer
+            ref={playerRef}
             url={videoUrl}
             playing={isPlaying}
             volume={volume / 100}
@@ -80,50 +122,67 @@ export default function CourseDetail() {
             controls={false}
             width="100%"
             height="100%"
+            onProgress={handleProgress}
+            onDuration={(duration) => setDuration(duration)}
             className="react-player"
           />
         </div>
 
         {/* Video Control Bar */}
-        <div className="flex items-center justify-between p-2 bg-gray-900 text-white">
-          <div className="flex space-x-2">
-            <span onClick={() => setIsPlaying(!isPlaying)} className="cursor-pointer text-lg">
+        <div className="flex items-center justify-between px-4 py-3 bg-gray-900 text-white text-lg">
+          <div className="flex items-center space-x-3">
+            <button onClick={() => setIsPlaying(!isPlaying)} className="cursor-pointer">
               {isPlaying ? "⏸️" : "▶️"}
-            </span>
-            <span onClick={() => setIsMuted(!isMuted)} className="cursor-pointer text-lg">
+            </button>
+            <button onClick={() => setIsMuted(!isMuted)} className="cursor-pointer">
               {isMuted ? "🔇" : "🔊"}
-            </span>
-            <span onClick={toggleFullScreen} className="cursor-pointer text-lg">
+            </button>
+            <button onClick={() => handleSkip(-30)} className="cursor-pointer">
+              ⏪
+            </button>
+            <button onClick={() => handleSkip(30)} className="cursor-pointer">
+              ⏩
+            </button>
+            <button onClick={toggleFullScreen} className="cursor-pointer">
               {isFullScreen ? "📴" : "📺"}
-            </span>
-          </div>
-
-          {/* Volume Control */}
-          <div className="flex items-center">
-            <label htmlFor={`volume-${title}`} className="mr-2 text-sm">Volume:</label>
+            </button>
             <input
-              id={`volume-${title}`}
               type="range"
               min="0"
               max="100"
               value={volume}
               onChange={(e) => setVolume(e.target.value)}
-              className="slider"
+              className="w-20 slider ml-3"
             />
           </div>
+        </div>
+
+        {/* Progress Bar and Time Display */}
+        <div className="flex items-center justify-between px-4 py-2 bg-gray-800 text-white text-sm">
+          <span>{formatTime(played * duration)}</span>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={played}
+            onChange={handleSeek}
+            className="w-full mx-4"
+          />
+          <span>{formatTime(duration)}</span>
         </div>
 
         {/* Like/Dislike Section */}
         <div className="flex items-center justify-start space-x-4 p-2 bg-gray-100 text-gray-800">
           <span
             onClick={handleLike}
-            className={`cursor-pointer text-lg flex items-center space-x-1 ${hasLiked ? "text-blue-600" : ""}`}
+            className={`cursor-pointer flex items-center space-x-1 ${hasLiked ? "text-blue-600" : ""}`}
           >
             👍 <span>{likes}</span>
           </span>
           <span
             onClick={handleDislike}
-            className={`cursor-pointer text-lg flex items-center space-x-1 ${hasDisliked ? "text-red-600" : ""}`}
+            className={`cursor-pointer flex items-center space-x-1 ${hasDisliked ? "text-red-600" : ""}`}
           >
             👎 <span>{dislikes}</span>
           </span>
@@ -153,6 +212,7 @@ export default function CourseDetail() {
                 videoUrl={video.videoUrl}
                 title={video.title}
                 description={video.description}
+                videoId={video.id}
               />
             </div>
           ))

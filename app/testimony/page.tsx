@@ -1,6 +1,6 @@
 "use client"; // Ensure this directive is present for client components
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaStar } from 'react-icons/fa';
 
 interface FeedbackEntry {
@@ -17,6 +17,19 @@ export default function Testimony() {
     const [email, setEmail] = useState<string>(''); // Optional email
     const [feedbackEntries, setFeedbackEntries] = useState<FeedbackEntry[]>([]); // State for feedback entries
     const [showThankYou, setShowThankYou] = useState<boolean>(false); // State to show thank-you message
+
+    // Load feedback entries from localStorage when the component mounts
+    useEffect(() => {
+        const storedFeedbackEntries = localStorage.getItem('feedbackEntries');
+        if (storedFeedbackEntries) {
+            setFeedbackEntries(JSON.parse(storedFeedbackEntries));
+        }
+    }, []);
+
+    // Save feedback entries to localStorage whenever they change
+    useEffect(() => {
+        localStorage.setItem('feedbackEntries', JSON.stringify(feedbackEntries));
+    }, [feedbackEntries]);
 
     const handleRatingClick = (index: number) => {
         setRating(index + 1); // Set rating as a number

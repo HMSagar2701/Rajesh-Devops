@@ -6,13 +6,13 @@ export default function Social() {
             <h1 className="text-5xl font-bold mb-8 text-center drop-shadow-lg">Connect with Us</h1>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 px-4">
-                {[
-                    { icon: <FaFacebook size={40} />, name: "Facebook", color: "bg-blue-600", link: "https://www.facebook.com" },
-                    { icon: <FaInstagram size={40} />, name: "Instagram", color: "bg-pink-500", link: "https://www.instagram.com" },
-                    { icon: <FaLinkedin size={40} />, name: "LinkedIn", color: "bg-blue-700", link: "https://www.linkedin.com" },
-                    { icon: <FaWhatsapp size={40} />, name: "WhatsApp", color: "bg-green-500", link: "https://wa.me" },
-                    { icon: <FaYoutube size={40} />, name: "YouTube", color: "bg-red-600", link: "https://www.youtube.com" },
-                    { icon: <FaGithub size={40} />, name: "GitHub", color: "bg-gray-800", link: "https://github.com" },
+                {[ 
+                    { icon: <FaFacebook size={40} />, name: "Facebook", color: "bg-blue-600", link: "https://www.facebook.com" }, // Placeholder link
+                    { icon: <FaInstagram size={40} />, name: "Instagram", color: "bg-pink-500", link: "https://www.instagram.com" }, // Placeholder link
+                    { icon: <FaLinkedin size={40} />, name: "LinkedIn", color: "bg-blue-700", link: "https://www.linkedin.com/in/rajesh-singh-6a304a1ab/" }, // Updated LinkedIn link
+                    { icon: <FaWhatsapp size={40} />, name: "WhatsApp", color: "bg-green-500", link: "https://www.whatsapp.com/channel/0029Va9FEcW3gvWckXn0hV12" }, // Updated WhatsApp link
+                    { icon: <FaYoutube size={40} />, name: "YouTube", color: "bg-red-600", link: "https://www.youtube.com/@rajesh-devops" }, // Updated YouTube link
+                    { icon: <FaGithub size={40} />, name: "GitHub", color: "bg-gray-800", link: "https://github.com" }, // Placeholder link
                 ].map((social) => (
                     <a 
                         key={social.name}

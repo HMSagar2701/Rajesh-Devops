@@ -1,6 +1,7 @@
 "use client"; // Ensure this directive is present for client components
 
 import Link from "next/link";
+import Image from "next/image"; // Importing the Image component
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa"; // Importing icons for the hamburger menu
 
@@ -12,8 +13,15 @@ export default function Header() {
     return (
         <header className="w-full fixed top-0 left-0 z-10 bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md">
             <nav className="container mx-auto flex items-center justify-between p-4">
-                <Link href="/" className="font-bold text-2xl text-white hover:text-gray-200 transition" aria-label="Home">
-                    Logo
+                <Link href="/" className="flex items-center" aria-label="Home">
+                    {/* Logo Image */}
+                    <Image
+                        src="/Logo.jpg" // Path to your logo image
+                        alt="Logo"
+                        width={40} // Set your desired width
+                        height={40} // Set your desired height
+                        className="mr-2" // Margin to the right of the logo
+                    />
                 </Link>
                 
                 <div className="hidden md:flex space-x-6 text-lg">
